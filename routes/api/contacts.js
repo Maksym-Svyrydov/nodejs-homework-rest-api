@@ -1,19 +1,12 @@
 const express = require('express');
-
-const ctrl = require('../../controllers/contacts');
-
-// const { schemas } = require('../../models/contact');
 const router = express.Router();
+const ctrl = require('../../controllers/contacts');
+const { validateBody, isValidId } = require('../../midelwares');
+const { schemas } = require('../../models/contact');
 
-// const { validateBody, isValidId } = require('../../middlewares');
-
-// const Joi = require('joi');
-// const addSchema = Joi.object({
-//   name: Joi.string().required(),
-//   email: Joi.string().required(),
-//   phone: Joi.string().required(),
-// });
 router.get('/', ctrl.getAll);
+router.get('/:id', isValidId, ctrl.getById);
+router.post('/', validateBody(schemas.addSchema), ctrl.contactAdd);
 
 // router.get('/', async (req, res, next) => {
 //   try {
