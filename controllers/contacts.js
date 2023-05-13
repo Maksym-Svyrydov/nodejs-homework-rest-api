@@ -2,12 +2,12 @@ const { Contact } = require('../models/contact');
 
 const { HttpError, ctrlWrapper } = require('../helpers');
 
-const getAll = async (req, res) => {
+const getAllConcontacts = async (req, res) => {
   const result = await Contact.find();
   res.json(result);
 };
 
-const getById = async (req, res) => {
+const getContactById = async (req, res) => {
   const { id } = req.params;
   const result = await Contact.findById(id);
   if (!result) {
@@ -20,7 +20,7 @@ const contactAdd = async (req, res) => {
   const result = await Contact.create(req.body);
   res.status(201).json(result);
 };
-const updateById = async (req, res) => {
+const updateContactById = async (req, res) => {
   const { id } = req.params;
   const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
   if (!result) {
@@ -37,7 +37,7 @@ const updateStatusContact = async (req, res) => {
   res.json(result);
 };
 
-const deleteById = async (req, res) => {
+const deleteContactById = async (req, res) => {
   const { id } = req.params;
   const result = await Contact.findByIdAndRemove(id);
   if (!result) {
@@ -48,10 +48,10 @@ const deleteById = async (req, res) => {
   });
 };
 module.exports = {
-  getAll: ctrlWrapper(getAll),
+  getAllConcontacts: ctrlWrapper(getAllConcontacts),
   contactAdd: ctrlWrapper(contactAdd),
-  getById: ctrlWrapper(getById),
-  updateById: ctrlWrapper(updateById),
+  getContactById: ctrlWrapper(getContactById),
+  updateContactById: ctrlWrapper(updateContactById),
   updateStatusContact: ctrlWrapper(updateStatusContact),
-  deleteById: ctrlWrapper(deleteById),
+  deleteContactById: ctrlWrapper(deleteContactById),
 };
