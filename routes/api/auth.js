@@ -1,13 +1,14 @@
 const express = require('express');
-const { validateBody, isValidId } = require('../../midelwares');
+const ctrl = require('../../controllers/auth');
+const { validateBody } = require('../../midelwares');
+// isValidId;
 const { schemas } = require('../../models/user');
 const router = express.Router();
-const ctrt = require('../../controllers/auth');
 
 router.post(
   '/register',
   validateBody(schemas.registerSchema),
-  ctrt.registerUser
+  ctrl.registerUser
 );
-
+router.post('/login', validateBody(schemas.loginSchema), ctrl.loginUser);
 module.exports = router;
