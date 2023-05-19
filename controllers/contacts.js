@@ -2,9 +2,27 @@ const { Contact } = require('../models/contact');
 
 const { HttpError, ctrlWrapper } = require('../helpers');
 
-const getAllConcontacts = async (req, res) => {
-  const result = await Contact.find();
-  res.json(result);
+const getConcontacts = async (req, res) => {
+  const { _id: owner } = req.user;
+  const { page = 1, limit = 10, favorite } = req.query;
+  const skip = (page - 1) * limit;
+
+  if (favorite) {
+    const favoriteContacts = await Contact.find(
+      { owner },
+      '-createdAt -updatedAt'
+    )
+      .where('favorite')
+      .equals(favorite)
+      .populate('owner', 'name email', { skip, limit });
+    res.json(favoriteContacts);
+  } else {
+    const result = await Contact.find(
+      { owner },
+      '-createdAt -updatedAt'
+    ).populate('owner', 'name email', { skip, limit });
+    res.json(result);
+  }
 };
 
 const getContactById = async (req, res) => {
@@ -17,7 +35,8 @@ const getContactById = async (req, res) => {
 };
 
 const contactAdd = async (req, res) => {
-  const result = await Contact.create(req.body);
+  const { _id: owner } = req.user;
+  const result = await Contact.create({ ...req.body, owner });
   res.status(201).json(result);
 };
 const updateContactById = async (req, res) => {
@@ -47,8 +66,9 @@ const deleteContactById = async (req, res) => {
     message: 'Delete success',
   });
 };
+
 module.exports = {
-  getAllConcontacts: ctrlWrapper(getAllConcontacts),
+  getConcontacts: ctrlWrapper(getConcontacts),
   contactAdd: ctrlWrapper(contactAdd),
   getContactById: ctrlWrapper(getContactById),
   updateContactById: ctrlWrapper(updateContactById),
