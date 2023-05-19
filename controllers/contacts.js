@@ -34,10 +34,6 @@ const getContactById = async (req, res) => {
   res.json(result);
 };
 
-// const getFilterContactByFavorite = async (req, res) => {
-//   const { s } = req.params;
-// };
-
 const contactAdd = async (req, res) => {
   const { _id: owner } = req.user;
   const result = await Contact.create({ ...req.body, owner });
@@ -78,5 +74,4 @@ module.exports = {
   updateContactById: ctrlWrapper(updateContactById),
   updateStatusContact: ctrlWrapper(updateStatusContact),
   deleteContactById: ctrlWrapper(deleteContactById),
-  // getFilterContactByFavorite: ctrlWrapper(getFilterContactByFavorite),
 };
