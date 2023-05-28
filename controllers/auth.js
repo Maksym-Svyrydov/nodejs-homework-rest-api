@@ -16,7 +16,7 @@ const registerUser = async (req, res) => {
   const { email, password } = req.body;
   const checkUserEmail = await User.findOne({ email });
   if (checkUserEmail) {
-    throw HttpError(400);
+    throw HttpError(409, 'Email in use');
   }
   const hashPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email);
@@ -44,7 +44,7 @@ const verifyEmail = async (req, res) => {
   const { verificationCode } = req.params;
   const user = await User.findOne({ verificationCode });
   if (!user) {
-    throw HttpError(404, 'User not found');
+    throw HttpError(404, 'User verified');
   }
   await User.findByIdAndUpdate(user._id, {
     verify: true,
