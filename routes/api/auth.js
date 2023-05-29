@@ -2,7 +2,7 @@ const express = require('express');
 const ctrl = require('../../controllers/auth');
 const { validateBody, authenticate, upload } = require('../../midelwares');
 // isValidId;
-const { schemas } = require('../../models/user');
+const { schemas } = require('../../schemas/user');
 const router = express.Router();
 
 router.post(
@@ -10,7 +10,15 @@ router.post(
   validateBody(schemas.registerSchema),
   ctrl.registerUser
 );
+router.get('/verify/:verificationCode', ctrl.verifyEmail);
+router.post(
+  '/verify',
+  validateBody(schemas.emailShema),
+  ctrl.resendVerifyEmail
+);
+
 router.post('/login', validateBody(schemas.loginSchema), ctrl.loginUser);
+
 router.get('/current', authenticate, ctrl.getCurrentUser);
 
 router.post(

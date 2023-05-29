@@ -1,8 +1,5 @@
 const { Schema, model } = require('mongoose');
 const { handleMongooseError } = require('../helpers');
-const Joi = require('joi');
-
-const emailRegexp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
 const userSchema = new Schema(
   {
@@ -28,35 +25,21 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationCode: {
+      type: String,
+      default: [true, 'Verify token is required'],
+    },
   },
   { versionKey: false, timeseries: true }
 );
 userSchema.post('save', handleMongooseError);
 
-const registerSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().pattern(emailRegexp).required(),
-  password: Joi.string().min(6).required(),
-});
-
-const loginSchema = Joi.object({
-  email: Joi.string().pattern(emailRegexp).required(),
-  password: Joi.string().min(6).required(),
-});
-
-const updateSubscription = Joi.object({
-  subscription: Joi.string().valid('starter', 'pro', 'business').required(),
-});
-
-const schemas = {
-  registerSchema,
-  loginSchema,
-  updateSubscription,
-};
-
 const User = model('user', userSchema);
 
 module.exports = {
-  schemas,
   User,
 };
